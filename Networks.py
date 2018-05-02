@@ -49,8 +49,9 @@ class FeedForwardNeuralNetwork:
 		errors = [self.firstFundamentalEquation(weightedSums, activations, trainingExamples[1])]
 		for layer in range(self.layers-1, 0, -1):
 			errors.insert(0, self.secondFundamentalEquation(weightedSums, errors, layer))
-		for layer in range(self.layers - 1):
-			dweights.append(self.thirdFundamentalEquation(activations, errors, layer))
+		print(errors)
+		# for layer in range(self.layers - 1):
+		# 	dweights.append(self.thirdFundamentalEquation(activations, errors, layer))
 		return dweights, errors
 
 	"""
@@ -60,6 +61,7 @@ class FeedForwardNeuralNetwork:
 	"""
 	def firstFundamentalEquation(self, weightedSums, activations, trainingExamples):
 		#C'(activation L,y) * sigma'(activation L - 1)
+		print(typeof())
 		return self.costDerivative(activations[-1], trainingExamples[1]) * self.activationDerivative(weightedSums[-1])
 
 	"""
@@ -77,9 +79,11 @@ class FeedForwardNeuralNetwork:
 	def thirdFundamentalEquation(self, activations, errors, layer):
 		dweights = []
 		#check this, i think this should work, create a matrix with activations as rows multiplied by the error value going down
-		for i in range(errors[layer].size):
-			print(error[layer][i])
-			dweights.append(activations[layer] * errors[layer][i])
+
+
+		dweights.append(numpy.dot(activations[layer] , errors[layer]))
+
+		print(dweights)
 		return dweights
 
 	"""
