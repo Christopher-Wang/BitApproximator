@@ -1,15 +1,22 @@
 var math = require("mathjs");
 //Test behavior, training to make a full adder
-var adder = {
-	'0' : [[0,0,0],[0,0]],
-	'1' : [[0,0,1],[0,1]],
-	'2' : [[0,1,0],[0,1]],
-	'3' : [[0,1,1],[1,0]],
-	'4' : [[1,0,0],[0,1]],
-	'5' : [[1,0,1],[1,0]], 
-	'6' : [[1,1,0],[1,0]], 
-	'7' : [[1,1,1],[1,1]]
-}
+var adder = [
+	[[0,0,0],[0,0]],
+	[[0,0,1],[0,1]],
+	[[0,1,0],[0,1]],
+	[[0,1,1],[1,0]],
+	[[1,0,0],[0,1]],
+	[[1,0,1],[1,0]], 
+	[[1,1,0],[1,0]], 
+	[[1,1,1],[1,1]]
+];
+
+var adder = [
+	[[0,0],[0]],
+	[[0,1],[1]],
+	[[1,0],[1]],
+	[[1,1],[0]]
+];
 
 function test(network, epoch, check, learningRate){
 	var size = network.layers - 1;
@@ -20,7 +27,7 @@ function test(network, epoch, check, learningRate){
 			printTestdata(network, ++set);
 		}
 		//Do the training
-		var trainingExample = Math.floor(Math.random() * Math.floor(8));
+		var trainingExample = Math.floor(Math.random() * Math.floor(adder.length));
 		network.forwardPropagate(adder[trainingExample][0]);
 		network.backProp(adder[trainingExample][1]);
 		network.learn(learningRate);
@@ -29,7 +36,7 @@ function test(network, epoch, check, learningRate){
 
 function printTestdata(network, set){
 	console.log("Epoch:" + set);
-	for(let j = 0; j < 8; j++){
+	for(let j = 0; j < adder.length; j++){
 		network.forwardPropagate(adder[j][0])
 		console.log("Input: " + adder[j][0] + " Expected output: " + adder[j][1]);
 		console.log("Cost: " + network.cost(adder[j][1]).toFixed(4) + " Actual output: " + network.activations[network.layers - 1]);
@@ -157,17 +164,6 @@ Network.prototype.firstFundamentalEquation = function (expected){
  *
  */
 Network.prototype.secondFundamentalEquation = function(layer){
-	/** Figure this out
-	//Calculate the d(z+1)/dz
-	console.log("Weight matrix " + this.weights[layer + 1]);
-	console.log("Z " + this.weightedSum[layer]);
-	var dzplus1 = math.multiply(this.weights[layer + 1], this.weightedSum[layer].map(sigmoidPrime));
-	console.log(dzplus1)
-	//Calculate dC/d(z+1) * d(z+1)/dz
-	console.log(this.errors[layer + 1]);
-	return math.dotMultiply(this.errors[layer + 1], dzplus1);
-	*/
-	//WTF IS GOING ON HERE I DONT UNDERSTAND
 	var left = math.multiply(math.transpose(this.weights[layer + 1]), this.errors[layer+1]);
 	var right = this.weightedSum[layer].map(sigmoidPrime);
 	return math.dotMultiply(left, right);
@@ -196,10 +192,9 @@ Network.prototype.thirdFundamentalEquation = function(layer){
  		this.biases[i] = math.add(this.biases[i], math.multiply(this.errors[i], rate));
  		this.weights[i] = math.add(this.weights[i], math.multiply(this.dweights[i], rate));
  	}
- 	//this.weightMatrices[i], this. 
  }
 
-/** Method to construct a 2D array formed from the products of
+/** Method to construct a 2D array formed from the products of 2 arrays
  * 
  */
 function matrixBuilder(arr1, arr2){
@@ -217,10 +212,6 @@ function matrixBuilder(arr1, arr2){
 
 
 
-var network = new Network([3, 4, 10, 2]);
-test(network, 10000000000, 1000000, 3);
+var network = new Network([2, 2, 1]);
+test(network, 100000, 100000, 3);
 printTestdata(network, 11);
-
-
-network.forwardPropagate([0.09, 0, 0.09]);
-console.log(network.activations[3]);
