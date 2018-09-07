@@ -1,22 +1,8 @@
 var math = require("mathjs");
+var data = require("./toy_data.json")
+var adder = data.xor
 //Test behavior, training to make a full adder
-var adder = [
-	[[0,0,0],[0,0]],
-	[[0,0,1],[0,1]],
-	[[0,1,0],[0,1]],
-	[[0,1,1],[1,0]],
-	[[1,0,0],[0,1]],
-	[[1,0,1],[1,0]], 
-	[[1,1,0],[1,0]], 
-	[[1,1,1],[1,1]]
-];
 
-var adder = [
-	[[0,0],[0]],
-	[[0,1],[1]],
-	[[1,0],[1]],
-	[[1,1],[0]]
-];
 
 function test(network, epoch, check, learningRate){
 	var size = network.layers - 1;
