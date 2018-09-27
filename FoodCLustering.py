@@ -1,12 +1,12 @@
-# Example of kNN implemented from Scratch in Python
+# Example of kNN implemented to classify food groups from Open Government nutrition data
+# open.canada.ca/data/en/dataset/a289fd54-060c-4a96-9fcf-b1c6e706426f
 import csv
 import pandas as pd
 import numpy as np
 import os
 
-things = []
-headerList = []
-def loadDataset(filename):
+#Gets the title headers from .csv files (They are denoted by being in all caps in the first row)
+def getHeaders(filename):
 	headers = [0, 1]
 	with open(filename, 'rt') as csvfile:
 		read = csv.reader(csvfile)
@@ -14,23 +14,32 @@ def loadDataset(filename):
 		for i, row in enumerate(read):
 		 if row[0].isupper():
 		 	headers.append(i)
-	headerList.append(headers)
+	return headers
 
+#Get a dataframe from a datafile(+path)
+def getDataFrame(dataFile):
+	#Get the headers to skip
+	headers = getHeaders("Data_Food/" + dataFile)
+	df = pd.read_csv("Data_Food/" + dataFile, skiprows = headers)
+	#Add a class column
+	df["Class"] = dataFile[:-4]
+	return df
 
-datasets = [file for file in os.listdir("Data_Food/")]
-dfs = []
-for i, data in enumerate(datasets):
-	loadDataset("Data_Food/" + data)
-	df = pd.read_csv("Data_Food/" + data, skiprows = headerList[i])
-	dfs.append(df)
+#Get the concatenated data frames from all .csvfiles
+def getDataFrames(dataFiles):
+	dfs = []
+	for dataFile in dataFiles:
+		dfs.append(getDataFrame(dataFile))
+	return pd.concat(dfs, join="inner")
 
-data = pd.concat(dfs, join="inner")
-data = data.set_index('Food name')
-data = data.replace("tr", 0.001)
-data = data.replace(np.nan, 0)
-print(data)
-print(data.loc[data['Protein'] == "tr"])
-# result = set(things[0])
-# for s in things[1:]:
-#     result.intersection_update(s)
-# print(result)
+#Clean the data
+def cleanDataFrame(dataframe):
+	dataframe = dataframe.set_index('Food name')
+	dataframe = dataframe.replace("tr", 0.001)
+	return dataframe.replace(np.nan, 0)
+
+dataFiles = [file for file in os.listdir("Data_Food/")]
+dataframe = getDataFrames(dataFiles)
+dataframe = cleanDataFrame(dataframe)
+print(dataframe)
+
