@@ -33,13 +33,18 @@ def getDataFrames(dataFiles):
 	return pd.concat(dfs, join="inner")
 
 #Clean the data
-def cleanDataFrame(dataframe):
+def cleanDataFrame(dataframe, tr = 0.001, nan = 0):
 	dataframe = dataframe.set_index('Food name')
-	dataframe = dataframe.replace("tr", 0.001)
-	return dataframe.replace(np.nan, 0)
+	dataframe = dataframe.replace("tr", tr)
+	return dataframe.replace(np.nan, nan)
 
-dataFiles = [file for file in os.listdir("Data_Food/")]
-dataframe = getDataFrames(dataFiles)
-dataframe = cleanDataFrame(dataframe)
-print(dataframe)
+#Return the training and testing data, currently taken randomly
+def getData(percentage=0.8):
+	dataFiles = [file for file in os.listdir("Data_Food/")]
+	dataframe = getDataFrames(dataFiles)
+	dataframe = cleanDataFrame(dataframe)
+	mask = np.random.rand(len(dataframe)) < percentage
+	trainingData, testingData = dataframe[mask], dataframe[~mask]
+	return trainingData, testingData
 
+print(getData())
