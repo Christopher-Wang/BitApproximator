@@ -36,7 +36,7 @@ def getDataFrames(dataFiles):
 def cleanDataFrame(dataframe, tr = 0.001, nan = 0):
 	dataframe = dataframe.set_index('Food name')
 	dataframe = dataframe.replace("tr", tr)
-	dataframe = dataframe[dataframe.columns[1:-1]].apply(pd.to_numeric)
+	dataframe[dataframe.columns[1:-1]] = dataframe[dataframe.columns[1:-1]].apply(pd.to_numeric)
 	return dataframe.replace(np.nan, nan)
 
 #Return the training and testing data, currently taken randomly
@@ -50,5 +50,4 @@ dataframe = getData()
 mask = np.random.rand(len(dataframe)) < 0.8
 trainingData, testingData = dataframe[mask], dataframe[~mask]
 npval = dataframe.get_values()
-print(np.where(npval==' '))
 print(npval[100])

@@ -10,15 +10,22 @@ def euclideanDistance(instance1, instance2, length):
 		distance += pow((instance1[x] - instance2[x]), 2)
 	return math.sqrt(distance)
 
+def getAccuracy(testSet, predictions):
+	correct = 0
+	for x in range(len(testSet)):
+		if testSet[x][-1] == predictions[x]:
+			correct += 1
+	return (correct/float(len(testSet))) * 100.0
+
 class kNN(object):
 	def __init__(self, k, distance, data):
 		self.k = k
 		self.distance = distance
 		self.data = data
 
-	def getNeighbors(testInstance, columns):
+	def getNeighbors(self, testInstance, columns):
 		distances = []
-		for coloumn in coloumns:
+		for coloumn in columns:
 			dist =self.distance(testInstance, self.data[x], length)
 			distances.append((self.data[x], dist))
 		distances.sort(key=operator.itemgetter(1))
@@ -27,7 +34,7 @@ class kNN(object):
 			neighbors.append(distances[x][0])
 		return neighbors
 	 
-	def getResponse(neighbors):
+	def getResponse(self, neighbors):
 		classVotes = {}
 		for x in range(len(neighbors)):
 			response = neighbors[x][-1]
@@ -38,9 +45,3 @@ class kNN(object):
 		sortedVotes = sorted(classVotes.iteritems(), key=operator.itemgetter(1), reverse=True)
 		return sortedVotes[0][0]
 	 
-	def getAccuracy(testSet, predictions):
-		correct = 0
-		for x in range(len(testSet)):
-			if testSet[x][-1] == predictions[x]:
-				correct += 1
-		return (correct/float(len(testSet))) * 100.0
