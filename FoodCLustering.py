@@ -7,7 +7,7 @@ import os
 
 #Gets the title headers from .csv files (They are denoted by being in all caps in the first row)
 def getHeaders(filename):
-	headers = [0, 1]
+	headers = [0, 1, 3]
 	with open(filename, 'rt') as csvfile:
 		read = csv.reader(csvfile)
 		read = list(read)
@@ -36,15 +36,19 @@ def getDataFrames(dataFiles):
 def cleanDataFrame(dataframe, tr = 0.001, nan = 0):
 	dataframe = dataframe.set_index('Food name')
 	dataframe = dataframe.replace("tr", tr)
+	dataframe = dataframe[dataframe.columns[1:-1]].apply(pd.to_numeric)
 	return dataframe.replace(np.nan, nan)
 
 #Return the training and testing data, currently taken randomly
-def getData(percentage=0.8):
+def getData():
 	dataFiles = [file for file in os.listdir("Data_Food/")]
 	dataframe = getDataFrames(dataFiles)
 	dataframe = cleanDataFrame(dataframe)
-	mask = np.random.rand(len(dataframe)) < percentage
-	trainingData, testingData = dataframe[mask], dataframe[~mask]
-	return trainingData, testingData
+	return dataframe
 
-print(getData())
+dataframe = getData()
+mask = np.random.rand(len(dataframe)) < 0.8
+trainingData, testingData = dataframe[mask], dataframe[~mask]
+npval = dataframe.get_values()
+print(np.where(npval==' '))
+print(npval[100])
