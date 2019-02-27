@@ -10,7 +10,7 @@ function train(network, epoch, check, learningRate){
 	for(var i = 0; i < epoch; i++){
 		//Print the data
 		if(i % check == 0){
-			printTestdata(network, ++set);
+			getValidation(network, ++set);
 		}
 		//Do the training
 		var trainingExample = Math.floor(Math.random() * Math.floor(adder.length));
@@ -20,7 +20,7 @@ function train(network, epoch, check, learningRate){
 	}
 }
 
-function printTestdata(network, set){
+function getValidation(network, set){
 	console.log("Epoch:" + set);
 	for(let j = 0; j < adder.length; j++){
 		network.forwardPropagate(adder[j][0])
@@ -200,4 +200,4 @@ function matrixBuilder(arr1, arr2){
 
 var network = new Network([2, 2, 1]);
 train(network, 100000, 10000, 3);
-printTestdata(network, 11);
+getValidation(network, 11);
