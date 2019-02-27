@@ -4,7 +4,7 @@ var adder = data.xor
 //Test behavior, training to make a full adder
 
 
-function test(network, epoch, check, learningRate){
+function train(network, epoch, check, learningRate){
 	var size = network.layers - 1;
 	var set = 0;
 	for(var i = 0; i < epoch; i++){
@@ -199,5 +199,5 @@ function matrixBuilder(arr1, arr2){
 
 
 var network = new Network([2, 2, 1]);
-test(network, 100000, 100000, 3);
+train(network, 100000, 10000, 3);
 printTestdata(network, 11);
